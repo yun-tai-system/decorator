@@ -101,8 +101,8 @@ export class ParameterDecorator {
 }
 
 export class OriginParameterDecorator extends ParameterDecorator {
-    constructor(type: any) {
-        super(`@noding/decorator OriginParameterDecorator`, {}, type)
+constructor(type: any) {
+        super(`@noding/decorator OriginParameterDecorator`, type)
     }
 }
 export class PropertyDecorator {
