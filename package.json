@@ -1,0 +1,32 @@
+{
+  "name": "@noding/decorator",
+  "version": "1.0.2",
+  "description": "@noding/decorator 装饰器定义",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "prepublish": "tsc"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yun-tai-system/decorator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yun-tai-system/decorator/issues"
+  },
+  "homepage": "https://github.com/yun-tai-system/decorator#readme",
+  "devDependencies": {
+    "@types/node": "^14.14.10",
+    "ts-node": "^9.0.0",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.1.2"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  }
+}
