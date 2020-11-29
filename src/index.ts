@@ -14,9 +14,14 @@ export function createClassDecorator<O>(metadataKey: string) {
     return (options?: O): ClassDecorator => {
         return (target: any) => {
             const decorator = meepo.DecoratorStore.get(target);
+            const parameters = getDesignTargetParams(target);
             decorator.classes.push(
                 new meepo.ClassDecorator(metadataKey, options)
             );
+            parameters.map((item: any, index: number) => {
+                const parameter = decorator.parameters.get(`constructor`);
+                parameter.add(`${index}`, new meepo.OriginParameterDecorator(item))
+            });
             Reflect.set(target, decoratorKey, decorator.toJson())
         }
     }

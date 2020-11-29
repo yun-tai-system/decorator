@@ -12,10 +12,10 @@ export class UserDemo {
     @DemoProperty()
     username: string;
     @DemoMethod()
-    add(@DemoParameter() a: number, @DemoParameter() b: number): number {
+    add(a: number, @DemoParameter() b: number): number {
         return a + b;
     }
-    constructor(@DemoParameter() a: number, @DemoParameter() b: number) { }
+    constructor(@DemoParameter() a: number, b: number) { }
 }
 const clsDemo = getDecorator(UserDemo)
 

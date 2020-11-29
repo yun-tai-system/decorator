@@ -1,6 +1,6 @@
 {
   "name": "@noding/decorator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "@noding/decorator 装饰器定义",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

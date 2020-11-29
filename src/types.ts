@@ -60,6 +60,7 @@ export class MethodDecorator<O = any> {
         }
     }
 }
+
 export class ParameterDecorator<O = any> {
     /**
       * 装饰器 配置项目
@@ -87,6 +88,12 @@ export class ParameterDecorator<O = any> {
             options: this.options,
             type: this.type
         }
+    }
+}
+
+export class OriginParameterDecorator extends ParameterDecorator {
+    constructor(type: any) {
+        super(`@noding/decorator OriginParameterDecorator`, {}, type)
     }
 }
 export class PropertyDecorator<O = any> {
@@ -120,6 +127,7 @@ export class PropertyDecorator<O = any> {
 }
 export class ObjectArray<T>{
     private map: Map<string, T[]> = new Map();
+    constructor(private isEqual: (old: T, current: T) => boolean) { }
     get(key: string): T[] {
         if (this.map.has(key)) {
             return this.map.get(key) as T[];
@@ -131,7 +139,10 @@ export class ObjectArray<T>{
     }
     add(key: string, arg: T) {
         const list = this.get(key);
-        list.push(arg);
+        const item = list.find(it => this.isEqual(it, arg))
+        if (!item) {
+            list.push(arg);
+        }
         this.map.set(key, list);
     }
 
@@ -150,11 +161,12 @@ export class ObjectArray<T>{
 
 export class ObjectDecorator<T>{
     private map: Map<string, ObjectArray<T>> = new Map();
+    constructor(private isEqual: (old: T, current: T) => boolean) { }
     get(key: string): ObjectArray<T> {
         if (this.map.has(key)) {
             return this.map.get(key) as ObjectArray<T>;
         } else {
-            const res = new ObjectArray<T>();
+            const res = new ObjectArray<T>(this.isEqual);
             this.map.set(key, res);
             return res;
         }
@@ -188,15 +200,21 @@ export class ClassStore<T = any> {
     /**
      * 一个类有多个方法，每个方法有多个方法装饰器
      */
-    methods: ObjectArray<MethodDecorator> = new ObjectArray();
+    methods: ObjectArray<MethodDecorator> = new ObjectArray((old, current) => {
+        return old.name === current.name
+    });
     /**
      * 一个类有多个属性，每个方法有多个属性装饰器
      */
-    properties: ObjectArray<PropertyDecorator> = new ObjectArray();
+    properties: ObjectArray<PropertyDecorator> = new ObjectArray((old, current) => {
+        return old.name === current.name
+    });
     /**
      * 方法参数 包括constructor
      */
-    parameters: ObjectDecorator<ParameterDecorator> = new ObjectDecorator();
+    parameters: ObjectDecorator<ParameterDecorator> = new ObjectDecorator((old, current) => {
+        return old.name === current.name
+    });
 
     toJson() {
         return {
