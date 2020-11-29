@@ -1,10 +1,30 @@
 
 import { createDecorator, createClassDecorator, createPropertyDecorator, createMethodDecorator, createParameterDecorator, getDecorator } from './index';
-const DemoClass = createClassDecorator(`demo class`)
-const DemoProperty = createPropertyDecorator(`demo property`)
-const DemoMethod = createMethodDecorator(`demo method`)
-const DemoParameter = createParameterDecorator(`demo parameter`)
-const Demo2Class = createDecorator(`demo2 class`)
+export interface DemoClass {
+    new(): DemoClass;
+    (): ClassDecorator;
+}
+const DemoClass = createClassDecorator<DemoClass>(`demo class`)
+export interface DemoProperty {
+    new(): DemoProperty;
+    (): PropertyDecorator;
+}
+const DemoProperty = createPropertyDecorator<DemoProperty>(`demo property`)
+export interface DemoMethod {
+    new(): DemoMethod;
+    (): MethodDecorator;
+}
+const DemoMethod = createMethodDecorator<DemoMethod>(`demo method`)
+export interface DemoParameter {
+    new(): DemoParameter;
+    (): ParameterDecorator;
+}
+const DemoParameter = createParameterDecorator<DemoParameter>(`demo parameter`)
+export interface Demo2Class {
+    new(): Demo2Class;
+    (): ClassDecorator;
+}
+const Demo2Class = createDecorator<Demo2Class>(`demo2 class`)
 
 @Demo2Class()
 @DemoClass()
