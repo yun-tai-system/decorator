@@ -14,7 +14,7 @@ export function createClassDecorator<O>(metadataKey: string) {
     return (options?: O): ClassDecorator => {
         return (target: any) => {
             const decorator = meepo.DecoratorStore.get(target);
-            const parameters = getDesignTargetParams(target);
+            const parameters = getDesignTargetParams(target) || [];
             decorator.classes.push(
                 new meepo.ClassDecorator(metadataKey, options)
             );
