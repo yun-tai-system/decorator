@@ -4,39 +4,27 @@ export interface Type<T> extends Function {
 
 export class ClassDecorator {
     /**
-     * 装饰器 配置项目
-     */
-    private _args: any[];
-    get args(): any[] {
-        return this._args;
-    }
-    /**
      * 装饰器名字
      */
 
     get name(): string {
         return this._name;
     }
-    constructor(private _name: string, ...args: any[]) {
-        this._args = args;
+
+    get def(): any {
+        return this._def;
     }
+    constructor(private _name: string, private _def: any) { }
 
     toJson() {
         return {
             kind: 'ClassDecorator',
             name: this.name,
-            args: this.args
+            def: this.def
         }
     }
 }
 export class MethodDecorator {
-    /**
-    * 装饰器 配置项目
-    */
-    private _args: any[] = [];
-    get args() {
-        return this._args;
-    }
     /**
      * 装饰器名字
      */
@@ -52,15 +40,18 @@ export class MethodDecorator {
         return this._returnType
     }
 
-    constructor(private _name: string, private _descriptor: TypedPropertyDescriptor<any>, private _returnType: any, ...args: any[]) {
-        this._args = args;
+    get def() {
+        return this._def;
+    }
+
+    constructor(private _name: string, private _descriptor: TypedPropertyDescriptor<any>, private _returnType: any, private _def: any) {
     }
 
     toJson() {
         return {
             kind: 'MethodDecorator',
             name: this.name,
-            args: this.args,
+            def: this.def,
             descriptor: this.descriptor,
             type: this.type
         }
@@ -69,13 +60,6 @@ export class MethodDecorator {
 
 export class ParameterDecorator {
     /**
-      * 装饰器 配置项目
-      */
-    private _args: any[];
-    get args() {
-        return this._args;
-    }
-    /**
      * 装饰器名字
      */
     get name(): string {
@@ -86,33 +70,29 @@ export class ParameterDecorator {
         return this._type;
     }
 
-    constructor(private _name: string, private _type: any, ...args: any[]) {
-        this._args = args;
+    get def(): any {
+        return this._def
+    }
+
+    constructor(private _name: string, private _type: any, private _def: any) {
     }
 
     toJson() {
         return {
             kind: 'ParameterDecorator',
             name: this.name,
-            args: this.args,
-            type: this.type
+            type: this.type,
+            def: this.def
         }
     }
 }
 
 export class OriginParameterDecorator extends ParameterDecorator {
-constructor(type: any) {
-        super(`@noding/decorator OriginParameterDecorator`, type)
+    constructor(type: any, def: any) {
+        super(`@noding/decorator OriginParameterDecorator`, type, def)
     }
 }
 export class PropertyDecorator {
-    /**
-      * 装饰器 配置项目
-      */
-    private _args: any[];
-    get args() {
-        return this._args;
-    }
     /**
      * 装饰器名字
      */
@@ -124,16 +104,19 @@ export class PropertyDecorator {
         return this._type;
     }
 
-    constructor(private _name: string, private _type: any, ...args: any[]) {
-        this._args = args;
+    get def(): any {
+        return this._def;
+    }
+
+    constructor(private _name: string, private _type: any, private _def: any) {
     }
 
     toJson() {
         return {
             kind: 'PropertyDecorator',
             name: this.name,
-            args: this.args,
-            type: this.type
+            type: this.type,
+            def: this.def
         }
     }
 }

@@ -40,16 +40,17 @@ export function createClassDecorator<T>(
                 metaCtor.call(this, ...args);
                 return this as typeof DecoratorFactory;
             }
+            const annotationInstance = new (<any>DecoratorFactory)(...args);
             return function TypeDecorator(cls: Type<any>) {
                 if (typeFn) typeFn(cls, ...args);
                 const decorator = meepo.DecoratorStore.get(cls);
                 const parameters = getDesignTargetParams(cls) || [];
                 decorator.classes.push(
-                    new meepo.ClassDecorator(name, ...args)
+                    new meepo.ClassDecorator(name, annotationInstance)
                 );
                 parameters.map((item: any, index: number) => {
                     const parameter = decorator.parameters.get(`constructor`);
-                    parameter.add(`${index}`, new meepo.OriginParameterDecorator(item))
+                    parameter.add(`${index}`, new meepo.OriginParameterDecorator(item, undefined))
                 });
                 Reflect.set(cls, decoratorKey, decorator.toJson())
                 if (additionalProcessing) additionalProcessing(cls);
@@ -80,11 +81,12 @@ export function createPropertyDecorator<T>(
                 metaCtor.call(this, ...args);
                 return this as typeof PropDecoratorFactory;
             }
+            const annotationInstance = new (<any>PropDecoratorFactory)(...args);
             return function PropDecorator(target: any, property: any) {
                 const type = target.constructor;
                 const decorator = meepo.DecoratorStore.get(type);
                 const types = getDesignType(target, property);
-                decorator.properties.add(property, new meepo.PropertyDecorator(name, types, ...args))
+                decorator.properties.add(property, new meepo.PropertyDecorator(name, types, annotationInstance))
                 Reflect.set(type, decoratorKey, decorator.toJson())
                 if (additionalProcessing) additionalProcessing(type, property);
             };
@@ -113,6 +115,7 @@ export function createParameterDecorator<O>(
                 metaCtor.call(this, ...args);
                 return this as typeof ParameterDecoratorFactory;
             }
+            const annotationInstance = new (<any>ParameterDecoratorFactory)(...args);
             return function ParameterDecorator(target: any, property: any, index: number) {
                 let type = target;
                 const key = property || 'constructor';
@@ -125,7 +128,7 @@ export function createParameterDecorator<O>(
                 }
                 const decorator = meepo.DecoratorStore.get(type);
                 const constructorDecorator = decorator.parameters.get(key)
-                constructorDecorator.add(`${index}`, new meepo.ParameterDecorator(name, types[index], ...args));
+                constructorDecorator.add(`${index}`, new meepo.ParameterDecorator(name, types[index], annotationInstance));
                 Reflect.set(type, decoratorKey, decorator.toJson())
                 if (additionalProcessing) additionalProcessing(type, property, index);
             };
@@ -154,11 +157,12 @@ export function createMethodDecorator<O>(
                 metaCtor.call(this, ...args);
                 return this as typeof MethodDecoratorFactory;
             }
+            const annotationInstance = new (<any>MethodDecoratorFactory)(...args);
             return function MethodDecorator(target: any, property: any, descriptor: TypedPropertyDescriptor<any>) {
                 const type = target.constructor;
                 const decorator = meepo.DecoratorStore.get(type);
                 const types = getDesignReturnType(target, property);
-                decorator.methods.add(property, new meepo.MethodDecorator(name, descriptor, types, ...args));
+                decorator.methods.add(property, new meepo.MethodDecorator(name, descriptor, types, annotationInstance));
                 Reflect.set(type, decoratorKey, decorator.toJson())
                 if (additionalProcessing) additionalProcessing(type, property, descriptor);
             };
@@ -216,16 +220,16 @@ export function createDecorator<O>(
     });
 }
 export interface IClassDecorator {
-    kind: 'ClassDecorator', name: string, args: any[]
+    kind: 'ClassDecorator', name: string, def: any
 }
 export interface IMethodDecorator {
-    kind: 'MethodDecorator', name: string, args: any[], type: any
+    kind: 'MethodDecorator', name: string, def: any, type: any
 }
 export interface IPropertyDecorator {
-    kind: 'PropertyDecorator', name: string, args: any[], type: any
+    kind: 'PropertyDecorator', name: string, def: any, type: any
 }
 export interface IParameterDecorator {
-    kind: 'ParameterDecorator', name: string, args: any[], type: any
+    kind: 'ParameterDecorator', name: string, def: any, type: any
 }
 export function getDecorator(type: meepo.Type<any>): {
     classes: IClassDecorator[],
